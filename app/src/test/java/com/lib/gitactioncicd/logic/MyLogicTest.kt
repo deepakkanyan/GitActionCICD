@@ -16,7 +16,7 @@ class MyLogicTest {
     @Test
     fun addTwoNumber_2() {
         val test = MyLogic()
-        val a = test.addTwoNumber(1,4)
-        Assert.assertEquals(a,3)
+        val a = test.addTwoNumber(5,4)
+        Assert.assertEquals(a,9)
     }
 }
