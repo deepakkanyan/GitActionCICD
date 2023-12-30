@@ -79,6 +79,25 @@ jobs:
       - name: Create service_account.json
         run: echo '${{ secrets.SERVICE_ACCOUNT_JSON }}' > service_account.json
 
+
+  upload-app:
+        name: "Upload App to BrowserStack"
+        runs-on: ubuntu-latest
+        steps:
+          - name: Check out Git repository
+            uses: actions/checkout@v2
+
+          - name: Upload Android App
+            id: android_app_upload
+            uses: fjogeleit/http-request-action@master
+            with:
+              url: https://api-cloud.browserstack.com/app-automate/upload
+              method: POST
+              username: ${{ env.BSTACK_USER }}
+              password: ${{ env.BSTACK_ACCESS_KEY }}
+              data: '{ "custom_id": "AndroidApp" }'
+              files: '{ "file": "${{ github.workspace }}/src/test/resources/apps/android/*.apk" }'
+
      # - name: Deploy to Alpha
         #  uses: r0adkll/upload-google-play@v1
           #with:
