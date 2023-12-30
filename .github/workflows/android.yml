@@ -87,16 +87,12 @@ jobs:
           - name: Check out Git repository
             uses: actions/checkout@v2
 
-          - name: Upload Android App
-            id: android_app_upload
-            uses: fjogeleit/http-request-action@master
+          - name: Upload APK to BrowserStack
+            uses: shreyanshp/upload-app-browserstack@v3
             with:
-              url: https://api-cloud.browserstack.com/app-automate/upload
-              method: POST
-              username: ${{ env.BSTACK_USER }}
-              password: ${{ env.BSTACK_ACCESS_KEY }}
-              data: '{ "custom_id": "AndroidApp" }'
-              files: '{ "file": "${{ github.workspace }}/app/build/outputs/release/*.aab" }'
+              app-path: /app/build/outputs/apk/release/*.aab
+              browserstack-username: ${{ secrets.BSTACK_USER }}
+              browserstack-accesskey: ${{ secrets.BSTACK_ACCESS_KEY }}
 
      # - name: Deploy to Alpha
         #  uses: r0adkll/upload-google-play@v1
