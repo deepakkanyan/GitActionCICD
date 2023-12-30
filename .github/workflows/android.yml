@@ -24,6 +24,8 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew build
+    - name: Run Android Linter
+      run: ./gradlew lint
 
   unit-test:
       name: Perform Unit Testing
@@ -38,3 +40,5 @@ jobs:
             cache: gradle
         - name: Run tests
           run: ./gradlew test
+
+
