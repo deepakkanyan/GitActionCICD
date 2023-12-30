@@ -90,7 +90,7 @@ jobs:
           - name: Upload APK to BrowserStack
             uses: shreyanshp/upload-app-browserstack@v3
             with:
-              app-path: /app/build/outputs/apk/release/*.aab
+              app-path: app/build/outputs/apk/release/app-release-unsigned.apk
               browserstack-username: ${{ secrets.BSTACK_USER }}
               browserstack-accesskey: ${{ secrets.BSTACK_ACCESS_KEY }}
 
