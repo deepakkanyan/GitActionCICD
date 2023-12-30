@@ -24,8 +24,15 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew build
-    - name: Run Android Linter
-      run: ./gradlew lint
+
+    - name: Run lint
+      run: ./gradlew lintDebug
+
+    - name: Upload html test report
+      uses: actions/upload-artifact@v2
+      with:
+        name: lint.html
+        path: app/build/reports/lint-results-debug.html
 
   unit-test:
       name: Perform Unit Testing
