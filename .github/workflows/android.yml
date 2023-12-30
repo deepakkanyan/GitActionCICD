@@ -80,27 +80,19 @@ jobs:
         run: echo '${{ secrets.SERVICE_ACCOUNT_JSON }}' > service_account.json
 
 
-  upload-app:
-        name: "Upload App to BrowserStack"
-        runs-on: ubuntu-latest
-        steps:
-          - name: Check out Git repository
-            uses: actions/checkout@v2
+  deploy:
+    name: Deploy release AAB on Playstore
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create service_account.json
+        run: echo '${{ secrets.SERVICE_ACCOUNT_JSON }}' > service_account.json
 
-          - name: Upload APK to BrowserStack
-            uses: shreyanshp/upload-app-browserstack@v3
-            with:
-              app-path: app/build/outputs/apk/release/app-release-unsigned.apk
-              browserstack-username: ${{ secrets.BSTACK_USER }}
-              browserstack-accesskey: ${{ secrets.BSTACK_ACCESS_KEY }}
-
-     # - name: Deploy to Alpha
-        #  uses: r0adkll/upload-google-play@v1
-          #with:
-          #serviceAccountJson: service_account.json
-          #packageName: com.lib.gitactioncicd
-          #releaseFiles: app/build/outputs/bundle/release/app-release.aab
-          #track: alpha
-        #status: completed
+      - name: Deploy to Play Store
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJson: service_account.json
+          packageName: ${{ github.event.inputs.app_id }}
+          releaseFiles: app/build/outputs/bundle/release/*.apk
+          track: production
 
 
