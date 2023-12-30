@@ -96,7 +96,7 @@ jobs:
               username: ${{ env.BSTACK_USER }}
               password: ${{ env.BSTACK_ACCESS_KEY }}
               data: '{ "custom_id": "AndroidApp" }'
-              files: '{ "file": "${{ github.workspace }}/src/test/resources/apps/android/*.apk" }'
+              files: '{ "file": "${{ github.workspace }}/app/build/outputs/bundle/release/*.aab" }'
 
      # - name: Deploy to Alpha
         #  uses: r0adkll/upload-google-play@v1
