@@ -84,8 +84,9 @@ jobs:
         with:
           serviceAccountJson: service_account.json
           packageName: com.lib.gitactioncicd
-          releaseFile: app/build/outputs/bundle/release/app-release.aab
+          releaseFile: app/build/outputs/bundle/release/*.aab
           track: alpha
+          status: completed
           whatsNewDirectory: distribution/
 
 
