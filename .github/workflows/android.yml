@@ -60,13 +60,13 @@ jobs:
           java-version: '17'
 
       - name: Build Release APK
-        run: ./gradlew assembleRelease
+        run: ./gradlew bundleRelease
 
       - name: Sign APK
         uses: r0adkll/sign-android-release@v1
         id: sign_app
         with:
-          releaseDirectory: app/build/outputs/apk/release
+          releaseDirectory: app/release
           signingKeyBase64: ${{ secrets.KEYSTORE_NAME }}
           alias: ${{ secrets.KEY_ALIAS }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
@@ -80,7 +80,7 @@ jobs:
       - name: Upload APK to BrowserStack
         uses: shreyanshp/upload-app-browserstack@v3
         with:
-          app-path: app/build/outputs/apk/release/app-release-unsigned.apk
+          app-path: app/release/app-release.aab
           browserstack-username: ${{ secrets.BSTACK_USER }}
           browserstack-accesskey: ${{ secrets.BSTACK_ACCESS_KEY }}
 
