@@ -5,7 +5,9 @@ on:
     branches: [ "master" , "develop"]
   pull_request:
     branches: [ "master", "develop"]
-
+env:
+    BS_USER: ${{secrets.BS_USER }}
+    BS_KEY: ${{secrets.BS_KEY }}
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -77,14 +79,26 @@ jobs:
       - name: Create service_account.json
         run: echo '${{ secrets.SERVICE_ACCOUNT_JSON }}' > service_account.json
 
-      - name: Upload APK to BrowserStack
-        uses: shreyanshp/upload-app-browserstack@v3
-        with:
-          app-path: app/release/app-release.aab
-          browserstack-username: ${{ secrets.BSTACK_USER }}
-          browserstack-accesskey: ${{ secrets.BSTACK_ACCESS_KEY }}
+  upload-app:
+        name: Upload APK to BrowserStack
+        runs-on: ubuntu-latest
+        steps:
+          - name: Check out Git repository
+            uses: actions/checkout@v4
 
-# Upload build to Playstore
+          - name: Upload Android App
+            id: android_app_upload
+            uses: fjogeleit/http-request-action@v1
+            with:
+              url: https://api-cloud.browserstack.com/app-automate/upload
+              method: POST
+              username: ${{ secrets.BSTACK_USER }}
+              password: ${{ secrets.BSTACK_ACCESS_KEY }}
+              data: '{ "custom_id": "AndroidApp" }'
+              files: '{ "file": "${{ github.workspace }}/core-java/src/test/resources/apps/android/*.apk" }'
+
+
+    # Upload build to Playstore
  #     - name: Deploy to Play Store
   #      uses: r0adkll/upload-google-play@v1
    #     with:
