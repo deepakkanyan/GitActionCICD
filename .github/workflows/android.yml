@@ -6,8 +6,8 @@ on:
   pull_request:
     branches: [ "master", "develop"]
 env:
-    BS_USER: ${{secrets.BS_USER }}
-    BS_KEY: ${{secrets.BS_KEY }}
+    BS_USER: ${{secrets.BSTACK_USER }}
+    BS_KEY: ${{secrets.BSTACK_ACCESS_KEY }}
 jobs:
   build:
     runs-on: ubuntu-latest
