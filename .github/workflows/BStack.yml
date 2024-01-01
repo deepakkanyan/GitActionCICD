@@ -1,0 +1,27 @@
+name: "Upload app to BrowserStack"
+
+on:
+  workflow_dispatch:
+env:
+  CLOUD_USER: ${{ secrets.CLOUD_USER }}
+  CLOUD_KEY: ${{ secrets.CLOUD_KEY }}
+
+jobs:
+  upload-app:
+    name: "Upload App to BrowserStack"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+
+      - name: Upload Android App
+        id: android_app_upload
+        uses: fjogeleit/http-request-action@master
+        with:
+          url: https://api-cloud.browserstack.com/app-automate/upload
+          method: POST
+          username: ${{ env.BSTACK_USER }}
+          password: ${{ env.BSTACK_ACCESS_KEY }}
+          data: '{ "custom_id": "AndroidApp" }'
+          files: '{ "file": "${{ github.workspace }}/src/test/resources/apps/android/*.apk" }'
+

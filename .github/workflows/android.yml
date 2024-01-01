@@ -2,15 +2,13 @@ name: Android CI
 
 on:
   push:
-    branches: [ "master" , "develop" ]
+    branches: [ "master" , "develop"]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "master", "develop"]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3
     - name: set up JDK 17
@@ -24,8 +22,15 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew build
-    - name: Run Android Linter
-      run: ./gradlew lint
+
+    - name: Run lint
+      run: ./gradlew lintDebug
+
+    - name: Upload html test report
+      uses: actions/upload-artifact@v2
+      with:
+        name: lint.html
+        path: app/build/reports/lint-results-debug.html
 
   unit-test:
       name: Perform Unit Testing
@@ -40,5 +45,52 @@ jobs:
             cache: gradle
         - name: Run tests
           run: ./gradlew test
+
+  apk:
+    name: Build Release signed APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Build Release APK
+        run: ./gradlew bundleRelease
+
+      - name: Sign bundle
+        uses: r0adkll/sign-android-release@v1
+        id: sign_app
+        with:
+          releaseDirectory: app/build/outputs/bundle/release
+          signingKeyBase64: ${{ secrets.KEYSTORE_NAME }}
+          alias: ${{ secrets.KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+        env:
+          BUILD_TOOLS_VERSION: "34.0.0"
+
+      - name: Create service_account.json
+        run: echo '${{ secrets.SERVICE_ACCOUNT_JSON }}' > service_account.json
+
+      - name: Upload APK to BrowserStack
+        uses: shreyanshp/upload-app-browserstack@v3
+        with:
+          app-path: app/release/app-release.aab
+          browserstack-username: ${{ secrets.BSTACK_USER }}
+          browserstack-accesskey: ${{ secrets.BSTACK_ACCESS_KEY }}
+
+# Upload build to Playstore
+ #     - name: Deploy to Play Store
+  #      uses: r0adkll/upload-google-play@v1
+   #     with:
+    #      serviceAccountJson: service_account.json
+     #     packageName: com.lib.gitactioncicd
+      #    releaseFiles: app/build/outputs/apk/release/app-release-unsigned.apk
+       #   track: production
 
 
